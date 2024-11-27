@@ -78,7 +78,7 @@ sys_pgaccess(void)
   uint64 address;
   uint64 user_address;
   uint64 bitmask = 0;
-  int paeg_count;
+  int page_count;
 
   // Get address, page count and user terminal address
   argaddr(0, &address);
