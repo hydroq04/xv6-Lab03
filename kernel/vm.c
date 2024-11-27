@@ -460,7 +460,7 @@ void vmprint(pagetable_t pagetable){
       uint64 pa = PTE2PA(pte);
       printf(" ..%d: pte %p pa %p\n", i, pte, pa);
 
-      if((pte & (PTE_R|PTE_W|PTE_X)) == 0){
+      if((pte & (PTE_R|PTE_W|PTE_X)) == 0){//kiểm tra trang lá
         pagetable_t next_pt = (pagetable_t)pa;
         for(int j = 0; j < 512; j++){
           pte_t pte2 = next_pt[j];
@@ -474,7 +474,7 @@ void vmprint(pagetable_t pagetable){
               for(int k = 0;k < 512; k++){
                 pte_t pte3 = next_pt2[k];
                 if(pte3 & PTE_V){
-                  uint64 pa3 = PTE2PA(pte);
+                  uint64 pa3 = PTE2PA(pte3);
                   printf(" .. .. ..%d: pte %p pa %p\n", k, pte3, pa3);
                 }
               }
