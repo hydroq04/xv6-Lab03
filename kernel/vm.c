@@ -462,10 +462,10 @@ void vmprint(pagetable_t pagetable, int level){
       // this PTE points to a lower-level page table.
       vmprint((pagetable_t)pa, level + 1);
     }
-    else if(pte & PTE_V){
+    else if(pte & PTE_V){ //leaf-page
       for(int j = 0;j < level; j++){
       printf(" ..");
-    }
+      }
       uint64 pa = PTE2PA(pte);
       printf(" %d: pte %p pa %p\n", i, pte, pa);
     }
