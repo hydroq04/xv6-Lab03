@@ -449,3 +449,39 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+void vmprint(pagetable_t pagetable){
+  printf("page table %p\n", pagetable);
+
+  for(int i = 0; i < 512; i++){
+    pte_t pte = pagetable[i];
+    //đọc bảng trang gốc
+    if(pte & PTE_V){
+      uint64 pa = PTE2PA(pte);
+      printf(" ..%d: pte %p pa %p\n", i, pte, pa);
+
+      if((pte & (PTE_R|PTE_W|PTE_X)) == 0){
+        pagetable_t next_pt = (pagetable_t)pa;
+        for(int j = 0; j < 512; j++){
+          pte_t pte2 = next_pt[j];
+          if(pte2 & PTE_V){
+            uint64 pa2 = PTE2PA(pte2);
+            printf(" .. ..%d: pte %p pa %p\n", j, pte2, pa2);
+
+          //đọc bảng trang trung gian
+            if((pte2 & (PTE_R|PTE_W|PTE_X)) == 0){
+              pagetable_t next_pt2 = (pagetable_t)pa2;
+              for(int k = 0;k < 512; k++){
+                pte_t pte3 = next_pt2[k];
+                if(pte3 & PTE_V){
+                  uint64 pa3 = PTE2PA(pte);
+                  printf(" .. .. ..%d: pte %p pa %p\n", k, pte3, pa3);
+                }
+              }
+            }
+          }
+        }
+      }
+    } 
+  }
+}
