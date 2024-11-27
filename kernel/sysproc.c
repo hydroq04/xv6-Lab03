@@ -75,6 +75,29 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  uint64 address;
+  uint64 user_address;
+  uint64 bitmask = 0;
+  int paeg_count;
+
+  // Get address, page count and user terminal address
+  argaddr(0, &address);
+  argint(1, &page_count);
+  argaddr(2, &user_address);
+
+  // Get the current process to read the page
+  struct proc* process = myproc();
+  for (int i = 0; i < page_count; ++i) {
+    pte_t* pte = walk(process -> pagetable, address + i * PGSIZE, 0);
+
+    // Check if page i is being accessed
+    if (*pte & PTE_A) {
+      bitmask |= (1 << i);
+      *pte &= (~PTE_A); 
+    }
+  }
+
+  copyout(process -> pagetable, user_address, (char *)&bitmask, sizeof(bitmask));
   return 0;
 }
 #endif
